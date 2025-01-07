@@ -17,10 +17,8 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
+    protected $guarded = [
+        'id'
     ];
 
     /**
@@ -45,4 +43,58 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function hobbies()
+    {
+        return $this->belongsToMany(Hobby::class, 'hobby_user');
+    }
+
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friend_user', 'user_id', 'friend_id')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+    
+    public function friendRequests()
+    {
+        return $this->belongsToMany(User::class, 'friend_user', 'friend_id', 'user_id')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get users who are not friends of the current user.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getNonFriends()
+    {
+        $friendIds = $this->friends()->pluck('friend_id')->toArray();
+
+        $friendIds[] = $this->id;
+
+        return User::whereNotIn('id', $friendIds)->with('hobbies')->get();
+    }
+
+    // Fungsi buat request2 an friend
+
+    // public function sendFriendRequest($userId, $friendId)
+    // {
+    //     $user = User::find($userId);
+    //     $user->friends()->attach($friendId, ['status' => 'pending']);
+    // }
+
+    // public function acceptFriendRequest($userId, $friendId)
+    // {
+    //     $user = User::find($userId);
+    //     $user->friendRequests()->updateExistingPivot($friendId, ['status' => 'accepted']);
+    // }
+
+    // public function removeFriend($userId, $friendId)
+    // {
+    //     $user = User::find($userId);
+    //     $user->friends()->detach($friendId);
+    // }
+
 }
