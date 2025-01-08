@@ -62,11 +62,9 @@ class AuthController extends Controller
             'password' => $request->password,
         ]);
 
-        if($request->amount > 100000) {
-            $extra = $request->amount - 100000;
-            $coins = $extra / 1000;
+        if($request->amount >= 100000) {
+            $coins = $request->amount / 1000; // Hitung coins langsung dari total amount
             $user->update(['coins' => $coins]);
-            $user->save();
         }
 
         $user->hobbies()->attach($request->hobby);

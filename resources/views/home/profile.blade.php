@@ -12,7 +12,7 @@
                         <h5 class="card-title mb-0">Profile Details</h5>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ asset('img/default-admin.jpeg') }}" alt="Christina Mason" class="rounded-circle mb-2"
+                        <img src="{{ Auth::user()->account_visible === 0 ? asset(Auth::user()->bear_image) : (Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : asset('img/default-admin.jpeg')) }}" alt="Christina Mason" class="rounded-circle mb-2"
                             width="128" height="128">
                         <h5 class="card-title mb-0">{{ Auth::user()->name }}</h5>
                         <div class="text-muted mb-2">
@@ -20,7 +20,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <a class="btn btn-primary btn-sm me-2" href="#">Edit</a>
+                            <a class="btn btn-primary btn-sm me-2" href="{{ route('home.settings') }}">Edit</a>
                             <form action="{{ route('auth.logout') }}" method="POST">
                                 @csrf
                                 <button class="btn btn-danger btn-sm" href="#">Logout</button>
@@ -38,17 +38,8 @@
                     </div>
                     <hr class="my-0">
                     <div class="card-body">
-                        <h5 class="h6 card-title">About</h5>
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-1"><span data-feather="home" class="feather-sm me-1"></span> Lives in <a
-                                    href="#">San Francisco, SA</a>
-                            </li>
-
-                            <li class="mb-1"><span data-feather="briefcase" class="feather-sm me-1"></span> Works at <a
-                                    href="#">GitHub</a></li>
-                            <li class="mb-1"><span data-feather="map-pin" class="feather-sm me-1"></span> From <a
-                                    href="#">Boston</a></li>
-                        </ul>
+                        <h5 class="h6 card-title">About Me</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium, expedita voluptatem. Saepe consectetur dolorem, enim itaque consequatur vel temporibus iusto sapiente tempore soluta repellendus neque perspiciatis omnis iste minima fugit natus culpa. Porro deserunt minima numquam, fugiat eos quibusdam ratione nam eaque, eveniet harum sunt dicta molestias? Mollitia, amet voluptates.</p>
                     </div>
                     <hr class="my-0">
                     <div class="card-body">

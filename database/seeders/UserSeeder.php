@@ -31,5 +31,16 @@ class UserSeeder extends Seeder
             $user->hobbies()->attach($hobbies);
         }
 
+        $owen = User::create([
+            'name' => 'Owen',
+            'email' => 'owentb125@gmail.com',
+            'phone_number' => '123',
+            'gender' => 'male',
+            'instagram' => 'owenn.tb',
+            'password' => bcrypt('password'),
+        ]);
+
+        $hobbies = Hobby::inRandomOrder()->take(3)->pluck('id');
+        $owen->hobbies()->attach($hobbies);
     }
 }

@@ -2,6 +2,7 @@
 
 @section('content')
     <main class="d-flex w-100 h-100">
+
         <div class="container d-flex flex-column">
             <div class="row vh-100">
                 <div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
@@ -10,8 +11,8 @@
                         <div class="text-center mt-4">
                             <h1 class="h2">Welcome back</h1>
                             <p class="lead">
-								Sign in to your account to continue
-							</p>
+                                Sign in to your account to continue
+                            </p>
                         </div>
 
                         <div class="card">
@@ -34,7 +35,8 @@
                                             <input class="form-control form-control-lg" type="password" name="password"
                                                 placeholder="Enter your password">
                                             <small>
-                                                Don't have an account?<a href="{{ route('auth.register') }}"> Register Now</a>
+                                                Don't have an account?<a href="{{ route('auth.register') }}"> Register
+                                                    Now</a>
                                             </small>
                                         </div>
                                         <div class="text-center mt-3">
@@ -44,7 +46,11 @@
                                 </div>
                             </div>
                         </div>
-
+                        @if (session('success'))
+                            <div class="alert alert-success dismissible" role="alert">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

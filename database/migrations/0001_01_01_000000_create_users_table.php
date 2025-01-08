@@ -20,8 +20,10 @@ return new class extends Migration
             $table->string('instagram');
             $table->string('description')->nullable();
             $table->string('password');
-            $table->float('coins')->default(0);
+            $table->float('coins')->default(100);
             $table->text('profile_image')->nullable();
+            $table->text('bear_image')->nullable();
+            $table->boolean('account_visible')->default(true);
             $table->timestamps();
         });
 
