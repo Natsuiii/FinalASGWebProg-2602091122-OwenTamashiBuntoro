@@ -54,7 +54,7 @@ class FriendController extends Controller
                     $query->where('friend_id', $friend->id)
                         ->orWhere('user_id', $friend->id);
                 })
-                ->where('pivot.status', 'accepted')
+                ->wherePivot('status', 'accepted')
                 ->exists()
             ) {
                 return response()->json(['message' => 'Friend already accepted'], 400);
@@ -65,7 +65,7 @@ class FriendController extends Controller
             return response()->json(['message' => 'Friend request accepted']);
         } catch (\Exception $e) {
             Log::error('Error in acceptRequest: ' . $e->getMessage());
-            return response()->json(['message' => 'An internal error occurred'], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
         $user = User::find($request->user_id);
         $friend = User::find($request->friend_id);

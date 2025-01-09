@@ -16,7 +16,7 @@
                             width="128" height="128">
                         <h5 class="card-title mb-0">{{ Auth::user()->name }}</h5>
                         <div class="text-muted mb-2">
-                            {{ Auth::user()->friends()->where('status', 'pending')->count() }} Friend Requests
+                            {{ Auth::user()->friends()->where('status', 'pending')->count() }} Friend Requests 
                         </div>
 
                         <div class="d-flex justify-content-center">
@@ -39,14 +39,14 @@
                     <hr class="my-0">
                     <div class="card-body">
                         <h5 class="h6 card-title">About Me</h5>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium, expedita voluptatem. Saepe consectetur dolorem, enim itaque consequatur vel temporibus iusto sapiente tempore soluta repellendus neque perspiciatis omnis iste minima fugit natus culpa. Porro deserunt minima numquam, fugiat eos quibusdam ratione nam eaque, eveniet harum sunt dicta molestias? Mollitia, amet voluptates.</p>
+                        <p>{{ Auth::user()->description ? Auth::user()->description : 'No description' }}</p>
                     </div>
                     <hr class="my-0">
                     <div class="card-body">
                         <h5 class="h6 card-title">Elsewhere</h5>
                         <ul class="list-unstyled mb-0">
                             <li class="mb-1"><span class="fab fa-instagram fa-fw me-1"></span> <a
-                                    href="https://instagram.com/{{ Auth::user()->instagram }}">Instagram</a></li>
+                                href="https://instagram.com/{{ Auth::user()->instagram }} " target="_blank">Instagram</a></li>
                         </ul>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                             <li class="nav-item">
                                 <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill"
                                     href="#tab-2">
-                                    <h6 class="mt-n1 mb-0">Friend Request</h6>
+                                    <h6 class="mt-n1 mb-0">Friend Request <span class="badge text-bg-secondary bg-danger">{{ Auth::user()->friendRequests()->where('status', 'pending')->count() }}</span></h6>
                                 </a>
                             </li>
                         </ul>
