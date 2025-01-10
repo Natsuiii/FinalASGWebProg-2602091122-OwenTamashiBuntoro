@@ -16,7 +16,7 @@
                             alt="Christina Mason" class="rounded-circle mb-2" width="128" height="128">
                         <h5 class="card-title mb-0">{{ Auth::user()->name }}</h5>
                         <div class="text-muted mb-2">
-                            {{ Auth::user()->friends()->where('status', 'pending')->count() }} Friend Requests
+                            {{ Auth::user()->friendRequests()->where('status', 'pending')->count() }} Friend Requests
                         </div>
 
                         <div class="d-flex justify-content-center">
@@ -209,7 +209,7 @@
                                                         <i class="fa-regular fa-heart text-primary"
                                                             id="like-{{ $friend->id }}"></i>
                                                     </button>
-                                                    <a class="btn btn-primary" href="">Detail</a>
+                                                    <a class="btn btn-primary" href="{{ route('home.detail', $friend->id) }}">Detail</a>
                                                 </div>
                                             </div>
                                         </div>
