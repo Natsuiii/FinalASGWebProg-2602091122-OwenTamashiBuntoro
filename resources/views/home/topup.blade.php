@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-md-10 col-xl-8 mx-auto">
                 <h1 class="text-center">Coin Topup</h1>
-                <p class="lead text-center mb-4">You can use this coin to buy things in our shop</p>
+                <p class="lead text-center mb-4">You can use these coin to buy things in our shop</p>
 
                 <div class="row py-4">
                     <div class="col-sm-4 mb-3 mb-md-0">

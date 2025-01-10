@@ -13,8 +13,9 @@ class SettingController extends Controller
     public function index()
     {
         $hobbies = Hobby::all();
+        $avatars = Auth::user()->avatars;
         $userHobbies = Auth::user()->hobbies->pluck('id')->toArray(); // ID hobi user
-        return view('home.settings', compact('hobbies', 'userHobbies'));
+        return view('home.settings', compact('hobbies', 'userHobbies', 'avatars'));
     }
 
     public function setAccountVisible(Request $request)
@@ -102,8 +103,7 @@ class SettingController extends Controller
         ]);
 
         $user = Auth::user();
-
-        // Update data user
+        
         $user->name = $request->name;
         $user->description = $request->description;
         $user->instagram = $request->instagram;
@@ -111,10 +111,13 @@ class SettingController extends Controller
         $user->email = $request->email;
         $user->hobbies()->sync($request->hobby);
 
-        // Upload dan simpan gambar profil jika ada
         if ($request->hasFile('profile_image')) {
             $file = $request->file('profile_image')->store('profile_images', 'public');
             $user->profile_image = $file;
+        }
+
+        if ($request->filled('selected_avatar')) {
+            $user->profile_image = $request->input('selected_avatar');
         }
 
         $user->save();

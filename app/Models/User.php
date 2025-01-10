@@ -55,12 +55,17 @@ class User extends Authenticatable
             ->withPivot('status')
             ->withTimestamps();
     }
-    
+
     public function friendRequests()
     {
         return $this->belongsToMany(User::class, 'friend_user', 'friend_id', 'user_id')
             ->withPivot('status')
             ->withTimestamps();
+    }
+
+    public function avatars()
+    {
+        return $this->belongsToMany(Avatar::class, 'avatar_user');
     }
 
     /**
@@ -71,10 +76,20 @@ class User extends Authenticatable
     public function getNonFriends()
     {
         $friendIds = $this->friends()->pluck('friend_id')->toArray();
+        $friendIds = array_merge($friendIds, $this->friendRequests()->pluck('user_id')->toArray());
 
         $friendIds[] = $this->id;
 
-        return User::whereNotIn('id', $friendIds)->with('hobbies')->get();
+        return User::whereNotIn('id', $friendIds)->with('hobbies')->where('account_visible', 1)->paginate(10);
+    }
+
+    public function getNonFriendsQuery()
+    {
+        $friendIds = $this->friends()->pluck('friend_id')->toArray();
+        $friendIds = array_merge($friendIds, $this->friendRequests()->pluck('user_id')->toArray());
+        $friendIds[] = $this->id;
+
+        return User::whereNotIn('id', $friendIds)->with('hobbies')->where('account_visible', 1);
     }
 
     // Fungsi buat request2 an friend

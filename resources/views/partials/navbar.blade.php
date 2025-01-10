@@ -10,14 +10,8 @@
             <a href="{{ route('home.index') }}"
                 class="nav-item nav-link {{ Route::is('home.index') ? 'active' : '' }}">Home</a>
             <a href="{{ route('home.topup') }}" class="nav-item nav-link {{ Route::is('home.topup') ? 'active' : '' }}">Top up</a>
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Friends</a>
-                <div class="dropdown-menu rounded-0 m-0">
-                    <a href="job-list.html" class="dropdown-item">Random</a>
-                    <a href="job-detail.html" class="dropdown-item">Filter</a>
-                </div>
-            </div>
-            <a href="contact.html" class="nav-item nav-link">Avatar</a>
+            <a href="{{ route('home.filter') }}" class="nav-item nav-link {{ Route::is(['home.filter', 'filter.search']) ? 'active' : '' }}">Friend Filter</a>
+            <a href="{{ route('home.avatar') }}" class="nav-item nav-link {{ Route::is('home.avatar') ? 'active' : '' }}">Avatar</a>
         </div>
         @if (Auth::check())
             <a href="{{ route('home.profile') }}" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">

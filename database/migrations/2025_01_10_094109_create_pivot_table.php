@@ -33,6 +33,17 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('friend_id')->references('id')->on('users')->onDelete('cascade');
         });
+
+        Schema::create('avatar_user', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('avatar_id');
+            $table->timestamps();
+
+            $table->primary(['user_id', 'avatar_id']);
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('avatar_id')->references('id')->on('avatars')->onDelete('cascade');
+        });
     }
 
     /**

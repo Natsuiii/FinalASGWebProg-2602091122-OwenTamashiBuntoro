@@ -114,22 +114,71 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
+                                            <!-- Button Upload -->
                                             <div class="text-center">
                                                 <img alt="Profile Image"
-                                                    src="{{ Auth::user()->account_visible === 0 ? asset(Auth::user()->bear_image) : (Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : asset('img/default-admin.jpeg')) }}"
+                                                    src="{{ Auth::user()->account_visible === 0 ? asset(Auth::user()->bear_image) : (str_contains(Auth::user()->profile_image, 'avatar') ? asset( Auth::user()->profile_image) : (Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : asset('img/default-admin.jpeg'))) }}"
                                                     class="rounded-circle img-responsive mt-2" width="128"
                                                     height="128">
                                                 <div class="mt-2">
-                                                    <input type="file" name="profile_image" id="avatar-input"
-                                                        accept="image/*" style="display: none;">
-                                                    <label for="avatar-input" class="btn btn-primary"><i
-                                                            class="fas fa-upload"></i> Upload</label>
+                                                    <span id="upload-btn" class="btn btn-primary"><i
+                                                            class="fas fa-upload"></i> Upload</span>
                                                     @error('profile_image')
                                                         <small class="text-danger d-block">{{ $message }}</small>
                                                     @enderror
                                                 </div>
                                                 <small>For best results, use an image at least 128px by 128px in .jpg
                                                     format</small>
+                                            </div>
+                                            <input type="hidden" name="selected_avatar" id="selected-avatar">
+                                            <!-- Modal Bootstrap -->
+                                            <div class="modal fade" id="avatarModal" tabindex="-1"
+                                                aria-labelledby="avatarModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="avatarModalLabel">Choose Your
+                                                                Avatar</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="avatar-container d-flex overflow-auto py-3">
+                                                                @forelse ($avatars as $avatar)
+                                                                    <!-- Mengganti angka dari 1 hingga 10 -->
+                                                                    <div class="text-center mx-2">
+                                                                        <img src="{{ asset($avatar->path) }}"
+                                                                            alt="Avatar"
+                                                                            class="rounded img-thumbnail mb-2 avatar-option"
+                                                                            style="max-width: 200px; height: 100px; cursor: pointer;">
+                                                                        <br>
+                                                                        <button type="button"
+                                                                            class="btn btn-sm btn-primary set-avatar-btn"
+                                                                            data-avatar-link="{{ asset($avatar->path) }}">
+                                                                            Set as Profile
+                                                                        </button>
+                                                                    </div>
+                                                                @empty
+                                                                    <div class="m-auto">
+                                                                        <h3>You do not have any avatar.</h3>
+                                                                        <p class="text-center">Click <a
+                                                                                href="{{ route('home.avatar') }}">here</a>
+                                                                            to buy some</p>
+                                                                    </div>
+                                                                @endforelse
+                                                            </div>
+                                                            <hr>
+                                                            <div class="text-center">
+                                                                <p>Or upload your own image:</p>
+                                                                <input type="file" name="profile_image"
+                                                                    id="avatar-input" accept="image/*"
+                                                                    style="display: none;">
+                                                                <label for="avatar-input" class="btn btn-secondary"><i
+                                                                        class="fas fa-upload"></i> Upload New Image</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -252,15 +301,32 @@
             $('#multi-select').select2();
         });
 
-        $(document).ready(function() {
-            // Trigger the hidden file input when the span is clicked
-            $('#upload-btn').on('click', function() {
-                $('#avatar-input').click();
-            });
-        });
+        // $(document).ready(function() {
+        //     // Trigger the hidden file input when the span is clicked
+        //     $('#upload-btn').on('click', function() {
+        //         $('#avatar-input').click();
+        //     });
+        // });
 
         $('#phone').on('input', function() {
             $(this).val($(this).val().replace(/[^0-9]/g, '')); // Hanya izinkan angka
+        });
+
+        $(document).ready(function() {
+            // Show modal when upload button is clicked
+            $('#upload-btn').on('click', function() {
+                $('#avatarModal').modal('show');
+            });
+        });
+
+        $(document).ready(function() {
+            $('.set-avatar-btn').on('click', function() {
+                const avatarLink = $(this).data('avatar-link');
+
+                $('#selected-avatar').val(avatarLink);
+
+                $('#avatarModal').modal('hide');
+            });
         });
     </script>
 @endpush

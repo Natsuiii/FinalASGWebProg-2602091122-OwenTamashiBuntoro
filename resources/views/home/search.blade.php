@@ -8,19 +8,16 @@
     <!-- Header End -->
     <div class="container-xxl py-5 bg-dark page-header mb-5">
         <div class="container my-5 pt-5 pb-4">
-            <h1 class="display-3 text-white mb-3 animated slideInDown">
-                Find The Perfect Friend that Matches Your Hobby
-            </h1>
-            <p class="fs-5 fw-medium text-white mb-4 pb-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, veritatis ab delectus fugit suscipit
-                recusandae deserunt magni? Culpa dignissimos nemo quia perspiciatis quaerat error aliquam, consectetur et
-                cupiditate facilis reiciendis.
-            </p>
-            <a href="{{ route('home.filter') }}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Start Searching A Friend</a>
+            <h1 class="display-3 text-white mb-3 animated slideInDown">Friend Search</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb text-uppercase">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page">Friend Search</li>
+                </ol>
+            </nav>
         </div>
     </div>
     <!-- Header End -->
-
 
     <!-- Search Start -->
     <div class="container-fluid bg-primary mb-5 wow fadeIn" style="padding: 35px;">
@@ -57,6 +54,7 @@
                     </div>
                     <div class="col-md-2">
                         <button class="btn btn-dark border-0 w-100" type="submit">Search</button>
+                        <a class="btn btn-dark border-0 w-100 mt-2" href="{{ route('home.filter') }}">Reset Filter</a>
                     </div>
                 </div>
             </form>
@@ -64,53 +62,17 @@
     </div>
     <!-- Search End -->
 
-    <!-- About Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
-                    <div class="row g-0 about-bg rounded overflow-hidden">
-                        <div class="col-6 text-start">
-                            <img class="img-fluid w-100" src="{{ asset('img/about-1.jpg') }}">
-                        </div>
-                        <div class="col-6 text-start">
-                            <img class="img-fluid" src="{{ asset('img/about-2.jpg') }}"
-                                style="width: 85%; margin-top: 15%;">
-                        </div>
-                        <div class="col-6 text-end">
-                            <img class="img-fluid" src="{{ asset('img/about-3.jpg') }}" style="width: 85%;">
-                        </div>
-                        <div class="col-6 text-end">
-                            <img class="img-fluid w-100" src="{{ asset('img/about-4.jpg') }}">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
-                    <h1 class="mb-4">We Help to Find Your Best Friend</h1>
-                    <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et
-                        eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
-                    <p><i class="fa fa-check text-primary me-3"></i>Tempor erat elitr rebum at clita</p>
-                    <p><i class="fa fa-check text-primary me-3"></i>Aliqu diam amet diam et eos</p>
-                    <p><i class="fa fa-check text-primary me-3"></i>Clita duo justo magna dolore erat amet</p>
-                    <a class="btn btn-primary py-3 px-5 mt-3" href="">Read More</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- About End -->
-
-
     <!-- Friends Start -->
     <div class="container-xxl py-5">
         <div class="container">
-            <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Friend Suggestion</h1>
+            <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Friend List</h1>
             @forelse ($friendSuggestions as $friend)
                 <div class="job-item p-2 mb-2">
                     <div class="row g-4">
                         <!-- Bagian Kiri (Gambar dan Nama Pekerjaan) -->
                         <div class="col d-flex align-items-center">
                             <img class="flex-shrink-0 img-fluid border rounded"
-                                src="{{ $friend->account_visible === 0 ? asset($friend->bear_image) : (str_contains($friend->profile_image, 'avatar') ? asset( $friend->profile_image) : ($friend->profile_image ? asset('storage/' . $friend->profile_image) : asset('img/default-admin.jpeg'))) }}"
+                                src="{{ $friend->account_visible === 0 ? asset($friend->bear_image) : ($friend->profile_image ? asset('storage/' . $friend->profile_image) : asset('img/default-admin.jpeg')) }}"
                                 alt="" style="width: 30px; height: 30px;">
                             <div class="text-start ps-4">
                                 <div>{{ $friend->name }}</div>
@@ -124,19 +86,21 @@
                                     <form action="{{ route('filter.search') }}" method="POST" class="d-inline">
                                         @csrf
                                         <input type="hidden" name="hobby[]" value="{{ $hobby->id }}">
-                                        <button type="submit" class="badge bg-primary me-1 border-0" style="cursor: pointer;">
+                                        <button type="submit" class="badge bg-primary me-1 border-0"
+                                            style="cursor: pointer;">
                                             {{ $hobby->name }}
                                         </button>
                                     </form>
                                 @endforeach
-                        
+
                                 @if ($friend->hobbies->count() > 3)
                                     <form action="{{ route('filter.search') }}" method="POST" class="d-inline">
                                         @csrf
                                         @foreach ($friend->hobbies as $hobby)
                                             <input type="hidden" name="hobby[]" value="{{ $hobby->id }}">
                                         @endforeach
-                                        <button type="submit" class="badge bg-primary me-1 border-0" style="cursor: pointer;">
+                                        <button type="submit" class="badge bg-primary me-1 border-0"
+                                            style="cursor: pointer;">
                                             +{{ $friend->hobbies->count() - 3 }} More
                                         </button>
                                     </form>
@@ -165,7 +129,7 @@
                 </div>
             @endforelse
             <div class="d-flex justify-content-center mt-4">
-                <a class="btn btn-primary py-3 px-5" href="{{ route('home.filter') }}">Browse More Friends</a>
+                {{ $friendSuggestions->links() }}
             </div>
         </div>
     </div>

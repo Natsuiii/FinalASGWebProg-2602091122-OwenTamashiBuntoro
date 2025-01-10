@@ -12,11 +12,11 @@
                         <h5 class="card-title mb-0">Profile Details</h5>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ Auth::user()->account_visible === 0 ? asset(Auth::user()->bear_image) : (Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : asset('img/default-admin.jpeg')) }}" alt="Christina Mason" class="rounded-circle mb-2"
-                            width="128" height="128">
+                        <img src="{{ Auth::user()->account_visible === 0 ? asset(Auth::user()->bear_image) : (str_contains(Auth::user()->profile_image, 'avatar') ? asset(Auth::user()->profile_image) : (Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : asset('img/default-admin.jpeg'))) }}"
+                            alt="Christina Mason" class="rounded-circle mb-2" width="128" height="128">
                         <h5 class="card-title mb-0">{{ Auth::user()->name }}</h5>
                         <div class="text-muted mb-2">
-                            {{ Auth::user()->friends()->where('status', 'pending')->count() }} Friend Requests 
+                            {{ Auth::user()->friends()->where('status', 'pending')->count() }} Friend Requests
                         </div>
 
                         <div class="d-flex justify-content-center">
@@ -33,7 +33,13 @@
                     <div class="card-body">
                         <h5 class="h6 card-title">Hobby</h5>
                         @foreach (Auth::user()->hobbies as $hobby)
-                            <a href="#" class="badge bg-primary me-1 my-1">{{ $hobby->name }}</a>
+                            <form action="{{ route('filter.search') }}" method="POST" class="d-inline">
+                                @csrf
+                                <input type="hidden" name="hobby[]" value="{{ $hobby->id }}">
+                                <button type="submit" class="badge bg-primary me-1 border-0" style="cursor: pointer;">
+                                    {{ $hobby->name }}
+                                </button>
+                            </form>
                         @endforeach
                     </div>
                     <hr class="my-0">
@@ -46,7 +52,8 @@
                         <h5 class="h6 card-title">Elsewhere</h5>
                         <ul class="list-unstyled mb-0">
                             <li class="mb-1"><span class="fab fa-instagram fa-fw me-1"></span> <a
-                                href="https://instagram.com/{{ Auth::user()->instagram }} " target="_blank">Instagram</a></li>
+                                    href="https://instagram.com/{{ Auth::user()->instagram }} "
+                                    target="_blank">Instagram</a></li>
                         </ul>
                     </div>
                 </div>
@@ -66,7 +73,9 @@
                             <li class="nav-item">
                                 <a class="d-flex align-items-center text-start mx-3 me-0 pb-3" data-bs-toggle="pill"
                                     href="#tab-2">
-                                    <h6 class="mt-n1 mb-0">Friend Request <span class="badge text-bg-secondary bg-danger">{{ Auth::user()->friendRequests()->where('status', 'pending')->count() }}</span></h6>
+                                    <h6 class="mt-n1 mb-0">Friend Request <span
+                                            class="badge text-bg-secondary bg-danger">{{ Auth::user()->friendRequests()->where('status', 'pending')->count() }}</span>
+                                    </h6>
                                 </a>
                             </li>
                         </ul>
@@ -78,8 +87,8 @@
                                             <!-- Bagian Kiri (Gambar dan Nama Pekerjaan) -->
                                             <div class="col d-flex align-items-center">
                                                 <img class="flex-shrink-0 img-fluid border rounded"
-                                                    src="{{ asset('img/default-admin.jpeg') }}" alt=""
-                                                    style="width: 30px; height: 30px;">
+                                                    src="{{ $friend->account_visible === 0 ? asset($friend->bear_image) : (str_contains($friend->profile_image, 'avatar') ? asset($friend->profile_image) : ($friend->profile_image ? asset('storage/' . $friend->profile_image) : asset('img/default-admin.jpeg'))) }}"
+                                                    alt="" style="width: 30px; height: 30px;">
                                                 <div class="text-start ps-4">
                                                     <div>{{ $friend->name }}</div>
                                                 </div>
@@ -88,10 +97,33 @@
                                             <!-- Bagian Tengah (Hobi) -->
                                             <div class="col d-flex align-items-center justify-content-center">
                                                 <div class="hobby-list text-center text-light">
-                                                    @foreach ($friend->hobbies as $hobby)
-                                                        <a href="#"
-                                                            class="badge bg-primary me-1">{{ $hobby->name }}</a>
+                                                    @foreach ($friend->hobbies->take(3) as $hobby)
+                                                        <form action="{{ route('filter.search') }}" method="POST"
+                                                            class="d-inline">
+                                                            @csrf
+                                                            <input type="hidden" name="hobby[]"
+                                                                value="{{ $hobby->id }}">
+                                                            <button type="submit" class="badge bg-primary me-1 border-0"
+                                                                style="cursor: pointer;">
+                                                                {{ $hobby->name }}
+                                                            </button>
+                                                        </form>
                                                     @endforeach
+
+                                                    @if ($friend->hobbies->count() > 3)
+                                                        <form action="{{ route('filter.search') }}" method="POST"
+                                                            class="d-inline">
+                                                            @csrf
+                                                            @foreach ($friend->hobbies as $hobby)
+                                                                <input type="hidden" name="hobby[]"
+                                                                    value="{{ $hobby->id }}">
+                                                            @endforeach
+                                                            <button type="submit" class="badge bg-primary me-1 border-0"
+                                                                style="cursor: pointer;">
+                                                                +{{ $friend->hobbies->count() - 3 }} More
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                             </div>
 
@@ -107,7 +139,8 @@
                                                         <i class="fa-solid fa-heart-crack text-danger"
                                                             id="like-{{ $friend->id }}"></i>
                                                     </button>
-                                                    <a class="btn btn-primary" href="">Detail</a>
+                                                    <a class="btn btn-primary"
+                                                        href="{{ route('home.detail', $friend->id) }}">Detail</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -124,8 +157,8 @@
                                             <!-- Bagian Kiri (Gambar dan Nama Pekerjaan) -->
                                             <div class="col d-flex align-items-center">
                                                 <img class="flex-shrink-0 img-fluid border rounded"
-                                                    src="{{ asset('img/default-admin.jpeg') }}" alt=""
-                                                    style="width: 30px; height: 30px;">
+                                                    src="{{ $friend->account_visible === 0 ? asset($friend->bear_image) : (str_contains($friend->profile_image, 'avatar') ? asset($friend->profile_image) : ($friend->profile_image ? asset('storage/' . $friend->profile_image) : asset('img/default-admin.jpeg'))) }}"
+                                                    alt="" style="width: 30px; height: 30px;">
                                                 <div class="text-start ps-4">
                                                     <div>{{ $friend->name }}</div>
                                                 </div>
@@ -134,10 +167,33 @@
                                             <!-- Bagian Tengah (Hobi) -->
                                             <div class="col d-flex align-items-center justify-content-center">
                                                 <div class="hobby-list text-center text-light">
-                                                    @foreach ($friend->hobbies as $hobby)
-                                                        <a href="#"
-                                                            class="badge bg-primary me-1">{{ $hobby->name }}</a>
+                                                    @foreach ($friend->hobbies->take(3) as $hobby)
+                                                        <form action="{{ route('filter.search') }}" method="POST"
+                                                            class="d-inline">
+                                                            @csrf
+                                                            <input type="hidden" name="hobby[]"
+                                                                value="{{ $hobby->id }}">
+                                                            <button type="submit" class="badge bg-primary me-1 border-0"
+                                                                style="cursor: pointer;">
+                                                                {{ $hobby->name }}
+                                                            </button>
+                                                        </form>
                                                     @endforeach
+
+                                                    @if ($friend->hobbies->count() > 3)
+                                                        <form action="{{ route('filter.search') }}" method="POST"
+                                                            class="d-inline">
+                                                            @csrf
+                                                            @foreach ($friend->hobbies as $hobby)
+                                                                <input type="hidden" name="hobby[]"
+                                                                    value="{{ $hobby->id }}">
+                                                            @endforeach
+                                                            <button type="submit" class="badge bg-primary me-1 border-0"
+                                                                style="cursor: pointer;">
+                                                                +{{ $friend->hobbies->count() - 3 }} More
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                             </div>
 
